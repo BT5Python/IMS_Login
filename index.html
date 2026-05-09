@@ -61,7 +61,7 @@ async function loginSuccess(event) {
 
   try {
     // Ganti URL ini dengan JSON raw GitHub repo Anda
-    const res = await fetch("https://raw.githubusercontent.com/BT5Python/IMS_Login/refs/heads/main/users.json");
+    const res = await fetch("https://raw.githubusercontent.com/BT5Python/IMS_Login/main/users.json");
     const users = await res.json();
 
     const hashedPass = await hashPassword(pass);
