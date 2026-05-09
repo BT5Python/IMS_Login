@@ -68,7 +68,7 @@ async function loginSuccess(event) {
     const match = users.find(u => u.username === user && u.passwordHash === hashedPass);
 
     if(match){
-      window.location.href = "progar.html"; // Halaman tujuan setelah login
+      window.location.href = "https://github.com/BT5Python/dasboard_IMS"; // Halaman tujuan setelah login
     } else {
       alert("Username atau Password salah!");
     }
