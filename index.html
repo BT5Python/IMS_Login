@@ -3,80 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Login Portal</title>
+<title>Login IMS</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
-video#bg-video { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:-2; }
-.overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.55); z-index:-1; }
-.content { position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1; color:white; text-align:center; font-family:'Courier New', monospace; width:90%; max-width:450px; }
-h1 { font-size:2em; margin-bottom:25px; text-shadow:0 0 8px #00ff00; line-height:0.5; }
-form { display:flex; flex-direction:column; align-items:center; gap:12px; }
-input { width:100%; padding:12px; border:1px solid #00ff00; border-radius:6px; background:rgba(0,0,0,0.3); color:#ffffff; font-size:1em; text-align:center; outline:none; }
-input::placeholder { color:#cccccc; }
-button { width:100%; padding:12px; background-color:#00ff00; color:black; border:none; border-radius:6px; font-size:1em; cursor:pointer; transition:0.3s; }
-button:hover { background-color:#00cc00; box-shadow:0 0 12px #00ff00; }
+* {margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Courier New',monospace;}
+.content{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;color:white;width:90%;max-width:400px;}
+input,button{padding:10px;margin:5px;width:100%;border-radius:5px;}
+input{background:rgba(0,0,0,0.3);color:white;border:1px solid #00ff00;}
+button{background:#00ff00;border:none;color:black;cursor:pointer;}
+button:hover{background:#00cc00;}
 </style>
 </head>
-<body>
+<body style="background:black;">
 
-<!-- Video Background -->
-<video id="bg-video" autoplay muted loop playsinline>
-  <source src="Desain_tanpa_judul.mp4" type="video/mp4">
-</video>
-
-<!-- Lapisan gelap -->
-<div class="overlay"></div>
-
-<!-- Musik Background -->
-<audio id="bg-music" autoplay loop>
-  <source src="Hymne-TNI-Angkatan-Udara.aac" type="audio/mpeg">
-</audio>
-
-<!-- Konten tengah -->
 <div class="content">
-  <h1>INTEGRATED</h1>
-  <h1>MONITORING SYSTEM</h1>
-  <form onsubmit="loginSuccess(event)">
-    <input type="text" name="admin" placeholder="Username" required autocomplete="off">
-    <input type="password" name="kodiklatau" placeholder="Password" required autocomplete="off">
+  <h1>INTEGRATED MONITORING SYSTEM</h1>
+  <form onsubmit="login(event)">
+    <input type="text" name="username" placeholder="Username" required autocomplete="off">
+    <input type="password" name="password" placeholder="Password" required autocomplete="off">
     <button type="submit">Login</button>
   </form>
 </div>
 
 <script>
-// Fungsi hash SHA-256
-async function hashPassword(str) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(str);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+// Hash SHA-256
+async function hashPassword(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// Fungsi login
-async function loginSuccess(event) {
+// Login function
+async function login(event){
   event.preventDefault();
-  const user = event.target.admin.value.trim();
-  const pass = event.target.kodiklatau.value.trim();
+  const user = event.target.username.value.trim();
+  const pass = event.target.password.value.trim();
+  const hashedPass = await hashPassword(pass);
 
-  try {
-    // **Link raw GitHub Anda sudah diperbaiki**
+  try{
     const res = await fetch("https://raw.githubusercontent.com/BT5Python/IMS_Login/main/users.json");
     const users = await res.json();
-
-    const hashedPass = await hashPassword(pass);
-    const match = users.find(u => u.username === user && u.passwordHash === hashedPass);
-
+    const match = users.find(u=>u.username===user && u.passwordHash===hashedPass);
     if(match){
-      window.location.href = "https://github.com/BT5Python/dasboard_IMS"; // Halaman tujuan setelah login
-    } else {
+      window.location.href="https://github.com/BT5Python/dasboard_IMS";
+    }else{
       alert("Username atau Password salah!");
     }
-  } catch(err) {
+  }catch(e){
     alert("Gagal ambil data user!");
   }
 }
 </script>
-
 </body>
 </html>
